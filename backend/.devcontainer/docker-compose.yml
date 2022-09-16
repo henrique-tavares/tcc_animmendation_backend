@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+    backend:
+        container_name: animmendation_backend_dev
+        build:
+            context: ..
+            dockerfile: .devcontainer/Dockerfile
+        volumes:
+            - ..:/home/node/app
+        ports:
+            - 3000:3000
+        entrypoint: /entrypoint.sh
+        command: tail -f /dev/null
+        extra_hosts:
+            - host.docker.internal:host-gateway
+        tty: true
+
+    db:
+        container_name: animmendation_db_dev
+        image: postgres
+        ports:
+            - ${DB_PORT:-5432}:5432
+        environment:
+            POSTGRES_USERNAME: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
+        volumes:
+            - v-animmendation-db-dev:/var/lib/postgresql/data
+        healthcheck:
+            test: pg_isready -U $$POSTGRES_USERNAME  -d $$POSTGERS_DB
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 5s
+
+volumes:
+    v-animmendation-db-dev:
+
+

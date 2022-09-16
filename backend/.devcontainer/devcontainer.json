@@ -1,6 +1,6 @@
 {
     "name": "Animmendation_Backend",
-    "dockerComposeFile": "../.docker/docker-compose.yml",
+    "dockerComposeFile": "./docker-compose.yml",
     "service": "backend",
     "workspaceFolder": "/home/node/app",
     "extensions": [
@@ -10,17 +10,8 @@
         "redhat.vscode-yaml",
         "jock.svg",
         "naumovs.color-highlight",
-        "zxh404.vscode-proto3"
+        "zxh404.vscode-proto3",
+        "Prisma.prisma"
     ],
-    "remoteUser": "node",
-    "customizations": {
-        "vscode": {
-            "settings": {
-                "terminal.integrated.defaultProfile.linux": "fish"
-            }
-        }
-    },
-    "features": {
-        "fish": "latest"
-    }
+    "remoteUser": "node"
 }

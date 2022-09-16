@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Anime" ALTER COLUMN "type" DROP NOT NULL;
