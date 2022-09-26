@@ -1,12 +1,16 @@
-FROM node:16
+FROM node:16.17.0-alpine3.15
 
-COPY .devcontainer/entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-RUN apt-get -y update && apt-get -y install sudo
+# RUN apt-get -y update && apt-get -y install sudo
+RUN apk add git bash ncurses --no-cache
+ENV GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
 RUN npm i -g pnpm ts-node
 
 USER node
 
-WORKDIR /home/node/app
+COPY .bashrc /home/node/.bashrc
+
+WORKDIR /home/node/TCC-Animmendation/backend

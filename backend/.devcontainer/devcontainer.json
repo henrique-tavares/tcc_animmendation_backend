@@ -2,7 +2,7 @@
     "name": "Animmendation_Backend",
     "dockerComposeFile": "./docker-compose.yml",
     "service": "backend",
-    "workspaceFolder": "/home/node/app",
+    "workspaceFolder": "/home/node/TCC-Animmendation/backend",
     "extensions": [
         "EditorConfig.EditorConfig",
         "christian-kohler.path-intellisense",
@@ -11,7 +11,15 @@
         "jock.svg",
         "naumovs.color-highlight",
         "zxh404.vscode-proto3",
-        "Prisma.prisma"
+        "Prisma.prisma",
+        "mhutchie.git-graph"
     ],
-    "remoteUser": "node"
+    "remoteUser": "node",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        }
+    }
 }

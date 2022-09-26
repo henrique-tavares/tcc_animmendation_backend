@@ -3,11 +3,10 @@ version: '3.9'
 services:
     backend:
         container_name: animmendation_backend_dev
-        build:
-            context: ..
-            dockerfile: .devcontainer/Dockerfile
+        build: .
         volumes:
-            - ..:/home/node/app
+            - ..:/home/node/TCC-Animmendation/backend
+            - ../../.git:/home/node/TCC-Animmendation/.git
         ports:
             - 3000:3000
         entrypoint: /entrypoint.sh
