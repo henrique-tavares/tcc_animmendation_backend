@@ -3,6 +3,7 @@
     "dockerComposeFile": "./docker-compose.yml",
     "service": "backend",
     "workspaceFolder": "/home/node/TCC-Animmendation/backend",
+    "postCreateCommand": "/entrypoint.sh",
     "extensions": [
         "EditorConfig.EditorConfig",
         "christian-kohler.path-intellisense",

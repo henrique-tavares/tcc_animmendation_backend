@@ -9,7 +9,6 @@ services:
             - ../../.git:/home/node/TCC-Animmendation/.git
         ports:
             - 3000:3000
-        entrypoint: /entrypoint.sh
         command: tail -f /dev/null
         extra_hosts:
             - host.docker.internal:host-gateway
