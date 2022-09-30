@@ -1,72 +1,76 @@
-import { Prisma } from "@prisma/client";
-import fs from "fs";
-import Papa from "papaparse";
-import path from "path";
-import { RawAnime } from "../../../src/types/data/anime";
+import dataFeederRawAnime from "../../../src/grpc/clients/dataFeederRawAnime";
+import type { RawAnime__Output } from "../../../src/grpc/pb/raw_anime/RawAnime";
+import { RawAnimeSynopsis__Output } from "../../../src/grpc/pb/raw_anime/RawAnimeSynopsis";
 import prisma from "../../client";
-import {
-  parseAnimeData,
-  parseIntegerConversion,
-  parseSynopsis,
-  parseUnknown,
-} from "./parsers";
+import { parseRawAnime, parseRawAnimeSynopsis } from "./parsers";
 
 async function execute() {
-  const animeDatasetReadstream = fs.createReadStream(
-    path.resolve(__dirname, "../../../datasets/anime.csv")
-  );
-  Papa.parse<RawAnime>(animeDatasetReadstream, {
-    header: true,
-    step(row) {
-      const { data: rawAnimeData } = row;
+  try {
+    await handleRawAnimeStream();
+    await handleRawAnimeSynopsisStream();
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-      const [startDate, endDate = ""] = rawAnimeData.Aired.split(" to ");
-      const parsedStartDate = parseAnimeData(startDate);
-      const parsedEndDate = parseAnimeData(endDate);
-      const parsedStudios = parseUnknown(rawAnimeData.Studios)
-        ?.replaceAll('"', "")
-        ?.split(", ");
+function handleRawAnimeStream() {
+  return new Promise<void>((resolve, reject) => {
+    const stream = dataFeederRawAnime.fetchRawAnimes({});
 
-      const animeCreateData: Prisma.AnimeCreateInput = {
-        malId: Number(rawAnimeData.MalId),
-        name: rawAnimeData.Name,
-        score: parseIntegerConversion(rawAnimeData.Score),
-        japaneseName: parseUnknown(rawAnimeData.JapaneseName),
-        type: parseUnknown(rawAnimeData.Type),
-        episodes: parseIntegerConversion(rawAnimeData.Episodes),
-        broadcastStartDate:
-          parsedStartDate && parsedEndDate
-            ? parsedStartDate.toISOString()
-            : null,
-        broadcastEndDate:
-          parsedStartDate && parsedEndDate ? parsedEndDate.toISOString() : null,
-        releaseDate:
-          parsedStartDate && !parsedEndDate
-            ? parsedStartDate.toISOString()
-            : null,
-        studios: parsedStudios,
-        source: parseUnknown(rawAnimeData.Source),
-        ageClassification: parseUnknown(rawAnimeData.Rating),
-        popularity: parseIntegerConversion(rawAnimeData.Popularity),
-        watching: parseIntegerConversion(rawAnimeData.Watching),
-        synopsis: parseSynopsis(rawAnimeData.Synopsis),
-      };
+    stream.on("data", (rawAnime: RawAnime__Output) => {
+      const parsedAnime = parseRawAnime(rawAnime);
 
       prisma.anime
         .upsert({
-          create: animeCreateData,
-          update: animeCreateData,
           where: {
-            malId: animeCreateData.malId,
+            malId: parsedAnime.malId,
+          },
+          create: parsedAnime,
+          update: parsedAnime,
+        })
+        .then();
+
+      console.log(`Created => ${parsedAnime.malId}: ${parsedAnime.name}`);
+    });
+
+    stream.on("error", (err) => {
+      reject(err.toString());
+    });
+
+    stream.on("end", () => {
+      console.log("done creating!");
+      resolve();
+    });
+  });
+}
+
+function handleRawAnimeSynopsisStream() {
+  return new Promise<void>((resolve, reject) => {
+    const stream = dataFeederRawAnime.fetchRawAnimesSynopsis({});
+
+    stream.on("data", (rawAnimeSynopsis: RawAnimeSynopsis__Output) => {
+      prisma.anime
+        .update({
+          where: {
+            malId: rawAnimeSynopsis.malId,
+          },
+          data: {
+            synopsis: rawAnimeSynopsis.synopsis,
           },
         })
-        .then((createdAnime) => {
-          console.log(`Created => ${createdAnime.malId}: ${createdAnime.name}`);
-        });
-    },
-    complete() {
-      console.log("done!");
-    },
+        .then();
+
+      console.log(`Updated (synopsis) => ${rawAnimeSynopsis.malId}`);
+    });
+
+    stream.on("error", (err) => {
+      reject(err.toString());
+    });
+
+    stream.on("end", () => {
+      console.log("done updating!");
+      resolve();
+    });
   });
 }
 
