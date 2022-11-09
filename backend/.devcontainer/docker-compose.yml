@@ -2,21 +2,25 @@ version: '3.9'
 
 services:
     backend:
-        container_name: animmendation_backend_dev
         build: .
         volumes:
-            - ..:/home/node/TCC-Animmendation/backend
-            - ../../.git:/home/node/TCC-Animmendation/.git
+            - ..:/home/node/tcc_animmendation/backend
+            - datasets:/home/node/tcc_animmendation/backend/data/datasets
         ports:
             - 3000:3000
         command: tail -f /dev/null
         extra_hosts:
             - host.docker.internal:host-gateway
+        env_file: ../.env
         tty: true
+        depends_on:
+            db:
+                condition: service_healthy
+            dataset_handler:
+                condition: service_completed_successfully
 
     db:
-        container_name: animmendation_db_dev
-        image: postgres
+        image: postgres:15
         ports:
             - ${DB_PORT:-5432}:5432
         environment:
@@ -24,15 +28,25 @@ services:
             POSTGRES_PASSWORD: ${DB_PASSWORD}
             POSTGRES_DB: ${DB_NAME}
         volumes:
-            - v-animmendation-db-dev:/var/lib/postgresql/data
+            - dbdata:/var/lib/postgresql/data
+            - datasets:/datasets
         healthcheck:
-            test: pg_isready -U $$POSTGRES_USERNAME  -d $$POSTGERS_DB
+            test: pg_isready -U $$POSTGRES_USERNAME  -d $$POSTGRES_DB
             interval: 10s
             timeout: 5s
             retries: 5
             start_period: 5s
 
+    dataset_handler:
+        image: neptune076/animmendation_dataset_handler:py-latest
+        volumes:
+            - datasets:/tcc_animmendation/dataset_handler/data/datasets
+        environment:
+            ANIME_DATA_DIR: "handler/anime_data"
+            ANIME_RATING_DIR: "handler/anime_rating"
+
 volumes:
-    v-animmendation-db-dev:
+    dbdata:
+    datasets:
 
 

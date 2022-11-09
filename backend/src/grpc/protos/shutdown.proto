@@ -1,8 +1,0 @@
-syntax = "proto3";
-package shutdown;
-
-service ShutdownService {
-  rpc Shutdown (Void) returns (Void) {};
-}
-
-message Void {}

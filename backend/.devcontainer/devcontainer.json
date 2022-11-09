@@ -2,7 +2,7 @@
     "name": "Animmendation_Backend",
     "dockerComposeFile": "./docker-compose.yml",
     "service": "backend",
-    "workspaceFolder": "/home/node/TCC-Animmendation/backend",
+    "workspaceFolder": "/home/node/tcc_animmendation/backend",
     "postCreateCommand": "/entrypoint.sh",
     "extensions": [
         "EditorConfig.EditorConfig",
@@ -13,14 +13,18 @@
         "naumovs.color-highlight",
         "zxh404.vscode-proto3",
         "Prisma.prisma",
-        "mhutchie.git-graph"
+        "mhutchie.git-graph",
+        "ChakrounAnas.turbo-console-log"
     ],
     "remoteUser": "node",
-    "customizations": {
-        "vscode": {
-            "settings": {
-                "terminal.integrated.defaultProfile.linux": "bash"
-            }
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:1": {
+            "version": "latest",
+            "installZsh": false,
+            "installOhMyZsh": false
+        },
+        "ghcr.io/meaningful-ooo/devcontainer-features/fish:1": {
+            "version": "latest"
         }
     }
 }

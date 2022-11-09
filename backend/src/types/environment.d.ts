@@ -3,11 +3,16 @@ export {};
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      DATASET_RAW_ANIME: string;
-      DATASET_RAW_ANIME_WITH_SYNOPSIS: string;
-      DATASET_TREATED_ANIME_COMPLETE: string;
-      MS_DATA_FEEDER: string;
-      MS_RECOMMENDATION: string;
+      DB_HOST?: string;
+      DB_NAME?: string;
+      DB_USERNAME?: string;
+      DB_PASSWORD?: string;
+      DB_PORT?: string;
+      // MS_DATASET_HANDLER?: string;
+      MS_RECOMMENDATION?: string;
+      SEED_ANIME?: string;
+      SEED_ANIME_RATING?: string;
+      // SEED_BULK_BATCH_SIZE?: string;
     }
   }
 }

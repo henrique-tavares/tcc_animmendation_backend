@@ -1,4 +1,7 @@
+.idea/
+.vscode/
 node_modules/
 .pnpm-store/
-.env
-*.csv
+build/
+tmp/
+temp/
