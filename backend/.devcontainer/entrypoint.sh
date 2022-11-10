@@ -2,7 +2,7 @@
 
 if [ -f "package.json" ]; then
   pnpm i
-  # pnpm prisma migrate dev
+  pnpm prisma migrate dev
 fi
 
 fish -c "fisher install pure-fish/pure"

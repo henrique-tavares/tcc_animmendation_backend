@@ -12,26 +12,44 @@ datasource db {
 }
 
 model Anime {
-  malId              Int           @id
+  malId              Int                @id
   name               String
   score              Float?
   genres             String[]
   japaneseName       String?
-  type               String?
+  type               Type?
   episodes           Int?
   broadcastStartDate DateTime?
   broadcastEndDate   DateTime?
   releaseDate        DateTime?
   studios            String[]
   source             String?
-  ageClassification  String?
+  duration           String?
+  ageClassification  AgeClassification?
   popularity         Int?
   ranked             Int?
   watching           Int?
-  synopsis           String?
   animeRatings       AnimeRating[]
 
   @@index([name, japaneseName])
+}
+
+enum Type {
+  TV
+  Special
+  ONA
+  Music
+  Movie
+  OVA
+}
+
+enum AgeClassification {
+  G      @map("G - All Ages")
+  PG     @map("PG - Children")
+  PG_13  @map("PG-13 - Teens 13 or older")
+  R      @map("R - 17+ (violence & profanity)")
+  R_PLUS @map("R+ - Mild Nudity")
+  R_X    @map("Rx - Hentai")
 }
 
 model AnimeRating {

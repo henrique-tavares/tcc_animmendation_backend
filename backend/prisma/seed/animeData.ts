@@ -11,7 +11,7 @@ async function execute() {
   }
 
   const result = await prisma.$executeRaw`
-    COPY public."Anime"("malId", name, score, genres, "japaneseName", type, episodes, studios, source, "ageClassification", popularity, watching, synopsis, "broadcastStartDate", "broadcastEndDate", "releaseDate")
+    COPY public."Anime"("malId", name, score, genres, "japaneseName", type, episodes, studios, source, duration, "ageClassification", ranked, popularity, watching, "broadcastStartDate", "broadcastEndDate", "releaseDate")
     FROM '/datasets/handler/anime_data/data.csv'
     WITH (FORMAT CSV, HEADER)
   `;
