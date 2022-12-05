@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package recommender;
+
+service Recommender {
+  rpc IsTrained (Empty) returns (IsTrainedResponse);
+  rpc GetRecommendations (RecommendationRequest) returns (RecommendationResponse);
+  rpc GetGroupRecommendations (GroupRecommendationRequest) returns (GroupRecommendationResponse);
+}
+
+message Empty {}
+
+message IsTrainedResponse {
+  bool trained = 1;
+}
+
+message RecommendationRequest {
+  int32 animeId = 1;
+  int32 k = 2;
+}
+
+message RecommendationResponse {
+  message Recommendation {
+    int32 recommendedAnimeId = 1;
+    int32 rank = 2;
+  }
+
+  int32 animeId = 1;
+  repeated Recommendation recommendations = 2;
+}
+
+message GroupRecommendationRequest {
+  repeated int32 animeIds = 1;
+  int32 k = 2;
+}
+
+message GroupRecommendationResponse {
+  repeated int32 animeIds = 1;
+  int32 k = 2;
+}
+
+

@@ -5,7 +5,7 @@ services:
         build: .
         volumes:
             - ..:/home/node/tcc_animmendation/backend
-            - datasets:/home/node/tcc_animmendation/backend/data/datasets
+            - datasets:/home/node/tcc_animmendation/backend/datasets
         ports:
             - 3000:3000
         command: tail -f /dev/null
@@ -16,8 +16,6 @@ services:
         depends_on:
             db:
                 condition: service_healthy
-            dataset_handler:
-                condition: service_completed_successfully
 
     db:
         image: postgres:15
@@ -36,14 +34,6 @@ services:
             timeout: 5s
             retries: 5
             start_period: 5s
-
-    dataset_handler:
-        image: neptune076/animmendation_dataset_handler:py-latest
-        volumes:
-            - datasets:/tcc_animmendation/dataset_handler/data/datasets
-        environment:
-            ANIME_DATA_DIR: "handler/anime_data"
-            ANIME_RATING_DIR: "handler/anime_rating"
 
 volumes:
     dbdata:

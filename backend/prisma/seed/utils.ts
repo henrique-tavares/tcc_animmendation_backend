@@ -1,41 +1,26 @@
-import { Dir } from "fs";
+import fs from "fs";
 import fsp from "fs/promises";
 import path from "path";
 import prisma from "../client";
 
 export async function cleanDatasets() {
-  const datasetPath = "../../data/datasets/handler";
+  const datasetPath = "../../datasets";
+  const files = ["animes.csv"];
 
-  const dir = await fsp.opendir(path.resolve(__dirname, datasetPath));
-  await recursiveDatasetRemove(dir);
-
-  console.log("Datasets removed.");
-}
-
-async function recursiveDatasetRemove(dir: Dir) {
-  for await (const dirEntry of dir) {
-    if (dirEntry.isDirectory()) {
-      recursiveDatasetRemove(
-        await fsp.opendir(path.resolve(dir.path, dirEntry.name))
-      );
+  for (const file of files) {
+    const filePath = path.resolve(__dirname, datasetPath, file);
+    if (!fs.existsSync(filePath)) {
       continue;
     }
 
-    if (dirEntry.isFile() && dirEntry.name == "data.csv") {
-      await fsp.unlink(path.resolve(dir.path, dirEntry.name));
-      await fsp
-        .open(path.resolve(dir.path, ".initialized"), "a")
-        .then((file) => {
-          file.close();
-        });
-    }
+    await fsp.unlink(filePath);
+    console.log(`Dataset '${filePath}' removed.`);
   }
 }
 
-export async function checkDbHasData(prismaTable: "Anime" | "AnimeRating") {
+export async function checkDbHasData(prismaTable: "anime") {
   const prismaTablesFirst = {
-    Anime: prisma.anime.findFirst(),
-    AnimeRating: prisma.animeRating.findFirst(),
+    anime: prisma.anime.findFirst(),
   };
 
   const result = await prismaTablesFirst[prismaTable];

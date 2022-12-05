@@ -5,6 +5,4 @@ if [ -f "package.json" ]; then
   pnpm prisma migrate dev
 fi
 
-fish -c "fisher install pure-fish/pure"
-
 exec "$@"

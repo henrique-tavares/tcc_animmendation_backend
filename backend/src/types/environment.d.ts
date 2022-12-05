@@ -8,11 +8,13 @@ declare global {
       DB_USERNAME?: string;
       DB_PASSWORD?: string;
       DB_PORT?: string;
-      // MS_DATASET_HANDLER?: string;
+      SFTP_HOST?: string;
+      SFTP_PORT?: string;
+      SFTP_USERNAME?: string;
+      SFTP_PASSWORD?: string;
+      SFTP_ANIMES_PATH?: string;
+      SFTP_USER_ANIME_RATINGS_PATH?: string;
       MS_RECOMMENDATION?: string;
-      SEED_ANIME?: string;
-      SEED_ANIME_RATING?: string;
-      // SEED_BULK_BATCH_SIZE?: string;
     }
   }
 }

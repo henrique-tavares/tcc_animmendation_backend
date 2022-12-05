@@ -3,7 +3,7 @@
     "dockerComposeFile": "./docker-compose.yml",
     "service": "backend",
     "workspaceFolder": "/home/node/tcc_animmendation/backend",
-    "postCreateCommand": "/entrypoint.sh",
+    "postCreateCommand": "bash .devcontainer/entrypoint.sh",
     "extensions": [
         "EditorConfig.EditorConfig",
         "christian-kohler.path-intellisense",
@@ -22,9 +22,6 @@
             "version": "latest",
             "installZsh": false,
             "installOhMyZsh": false
-        },
-        "ghcr.io/meaningful-ooo/devcontainer-features/fish:1": {
-            "version": "latest"
         }
     }
 }

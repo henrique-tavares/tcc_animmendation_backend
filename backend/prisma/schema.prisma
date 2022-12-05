@@ -12,62 +12,39 @@ datasource db {
 }
 
 model Anime {
-  malId              Int                @id
-  name               String
-  score              Float?
-  genres             String[]
-  japaneseName       String?
-  type               Type?
-  episodes           Int?
-  broadcastStartDate DateTime?
-  broadcastEndDate   DateTime?
-  releaseDate        DateTime?
-  studios            String[]
-  source             String?
-  duration           String?
-  ageClassification  AgeClassification?
-  popularity         Int?
-  ranked             Int?
-  watching           Int?
-  animeRatings       AnimeRating[]
+  id                Int       @id
+  title             String
+  score             Float?
+  alternativeTitles String[]  @map("alternative_titles")
+  picture           String?
+  status            String?
+  mediaType         String?   @map("media_type")
+  startDate         DateTime? @map("start_date")
+  endDate           DateTime? @map("end_date")
+  releasedSeason    String?   @map("released_season")
+  genres            String[]
+  synopsis          String?
+  ageClassification String?   @map("age_classification")
+  source            String?
+  studios           String[]
+  episodes          Int?
+  rank              Int?
+  popularity        Int?
+  nsfw              String?
+  relatedAnime      String[]  @map("related_anime")
 
-  @@index([name, japaneseName])
+  @@map("animes")
 }
 
-enum Type {
-  TV
-  Special
-  ONA
-  Music
-  Movie
-  OVA
+model SeedTracking {
+  model      Models   @id
+  lastSeeded DateTime @map("last_seeded")
+
+  @@map("seed_tracking")
 }
 
-enum AgeClassification {
-  G      @map("G - All Ages")
-  PG     @map("PG - Children")
-  PG_13  @map("PG-13 - Teens 13 or older")
-  R      @map("R - 17+ (violence & profanity)")
-  R_PLUS @map("R+ - Mild Nudity")
-  R_X    @map("Rx - Hentai")
-}
+enum Models {
+  Anime @map("anime")
 
-model AnimeRating {
-  id              Int             @id @default(autoincrement())
-  userId          Int
-  anime           Anime           @relation(fields: [animeId], references: [malId])
-  animeId         Int
-  rating          Int
-  watchingStatus  WatchingStatus?
-  watchedEpisodes Int?
-
-  @@index([userId, animeId])
-}
-
-enum WatchingStatus {
-  CURRENTLY_WATCHING
-  COMPLETED
-  ON_HOLD
-  DROPPED
-  PLAN_TO_WATCH
+  @@map("models")
 }

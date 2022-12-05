@@ -1,21 +1,38 @@
 import { exit } from "process";
-import animeData from "./animeData";
-import animeRating from "./animeRating";
+import animes from "./animes";
+import datasetsDownloader from "./datasetsDownloader";
 import { cleanDatasets } from "./utils";
+import prisma from "../client";
 
 async function main() {
-  if (process.env.SEED_ANIME?.match(/true/i)) {
-    await animeData.execute();
+  const { animeDownloaded } = await datasetsDownloader.execute();
+
+  if (animeDownloaded) {
+    await animes.execute();
+    await prisma.seedTracking.upsert({
+      where: {
+        model: "Anime",
+      },
+      create: {
+        model: "Anime",
+        lastSeeded: new Date(),
+      },
+      update: {
+        lastSeeded: new Date(),
+      },
+    });
+  } else {
+    console.log("Dataset for Anime is up to date");
   }
 
-  if (process.env.SEED_ANIME_RATING?.match(/true/i)) {
-    await animeRating.execute();
-  }
-
-  // await cleanDatasets();
+  await cleanDatasets();
 }
 
-main().catch((e) => {
-  console.error(e);
-  exit(1);
-});
+main()
+  .then(() => {
+    exit(0);
+  })
+  .catch((e) => {
+    console.error(e);
+    exit(1);
+  });
