@@ -13,6 +13,7 @@ export interface ProtoGrpcType {
     GroupRecommendationRequest: MessageTypeDefinition
     GroupRecommendationResponse: MessageTypeDefinition
     IsTrainedResponse: MessageTypeDefinition
+    Recommendation: MessageTypeDefinition
     RecommendationRequest: MessageTypeDefinition
     RecommendationResponse: MessageTypeDefinition
     Recommender: SubtypeConstructor<typeof grpc.Client, _recommender_RecommenderClient> & { service: _recommender_RecommenderDefinition }

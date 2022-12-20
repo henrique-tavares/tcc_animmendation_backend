@@ -4,16 +4,18 @@ services:
     backend:
         build: .
         volumes:
-            - ..:/home/node/tcc_animmendation/backend
-            - datasets:/home/node/tcc_animmendation/backend/datasets
+            - ..:/home/animmendation/tcc_animmendation/backend
+            - datasets:/home/animmendation/tcc_animmendation/backend/datasets
         ports:
-            - 3000:3000
+            - 4000:4000
         command: tail -f /dev/null
         extra_hosts:
             - host.docker.internal:host-gateway
         env_file: ../.env
         tty: true
         depends_on:
+            redis:
+                condition: service_started
             db:
                 condition: service_healthy
 
@@ -34,6 +36,24 @@ services:
             timeout: 5s
             retries: 5
             start_period: 5s
+    
+    translator:
+        build:
+            dockerfile: Dockerfile.libretranslate
+            args:
+                models: en,pt
+        restart: unless-stopped
+        ports: 
+            - 5000:5000
+        command: --disable-files-translation --disable-web-ui
+        
+
+    redis:
+        image: redis/redis-stack-server:latest
+        ports:
+            - ${REDIS_HOST:-6379}:6379
+        environment:
+            REDIS_ARGS: "--requirepass ${REDIS_PASSWORD}"
 
 volumes:
     dbdata:

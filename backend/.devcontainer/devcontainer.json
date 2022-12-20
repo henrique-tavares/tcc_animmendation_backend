@@ -2,7 +2,7 @@
     "name": "Animmendation_Backend",
     "dockerComposeFile": "./docker-compose.yml",
     "service": "backend",
-    "workspaceFolder": "/home/node/tcc_animmendation/backend",
+    "workspaceFolder": "/home/animmendation/tcc_animmendation/backend",
     "postCreateCommand": "bash .devcontainer/entrypoint.sh",
     "extensions": [
         "EditorConfig.EditorConfig",
@@ -16,12 +16,17 @@
         "mhutchie.git-graph",
         "ChakrounAnas.turbo-console-log"
     ],
-    "remoteUser": "node",
+    "remoteUser": "animmendation",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:1": {
             "version": "latest",
             "installZsh": false,
-            "installOhMyZsh": false
+            "installOhMyZsh": false,
+            "username": "animmendation",
+            "uid": 1000
+        },
+        "ghcr.io/guiyomh/features/fish:0": {
+            "version": "latest"
         }
     }
 }

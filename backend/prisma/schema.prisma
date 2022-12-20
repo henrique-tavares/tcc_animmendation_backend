@@ -12,26 +12,26 @@ datasource db {
 }
 
 model Anime {
-  id                Int       @id
+  id                Int                     @id
   title             String
-  score             Float?
-  alternativeTitles String[]  @map("alternative_titles")
+  score             Float
+  alternativeTitles String[]                @map("alternative_titles")
   picture           String?
-  status            String?
-  mediaType         String?   @map("media_type")
-  startDate         DateTime? @map("start_date")
-  endDate           DateTime? @map("end_date")
-  releasedSeason    String?   @map("released_season")
+  status            AnimeStatus
+  mediaType         AnimeMediaType          @map("media_type")
+  startDate         DateTime?               @map("start_date")
+  endDate           DateTime?               @map("end_date")
+  releasedSeason    String?                 @map("released_season")
   genres            String[]
   synopsis          String?
-  ageClassification String?   @map("age_classification")
+  ageClassification AnimeAgeClassification? @map("age_classification")
   source            String?
   studios           String[]
   episodes          Int?
   rank              Int?
   popularity        Int?
   nsfw              String?
-  relatedAnime      String[]  @map("related_anime")
+  relatedAnime      String[]                @map("related_anime")
 
   @@map("animes")
 }
@@ -47,4 +47,32 @@ enum Models {
   Anime @map("anime")
 
   @@map("models")
+}
+
+enum AnimeAgeClassification {
+  G      @map("g")
+  PG     @map("pg")
+  PG_13  @map("pg_13")
+  R      @map("r")
+  R_PLUS @map("r+")
+  RX     @map("rx")
+
+  @@map("anime_age_classification")
+}
+
+enum AnimeMediaType {
+  TV      @map("tv")
+  MOVIE   @map("movie")
+  OVA     @map("ova")
+  ONA     @map("ona")
+  SPECIAL @map("special")
+
+  @@map("anime_media_type")
+}
+
+enum AnimeStatus {
+  AIRING   @map("currently_airing")
+  FINISHED @map("finished_airing")
+
+  @@map("anime_status")
 }

@@ -1,52 +1,67 @@
 {
-    "name": "app",
+    "name": "backend",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "tsx watch src/server.ts",
+        "dev": "nodemon src/server.ts",
         "proto_gen": "./node_modules/.bin/proto-loader-gen-types --longs=Number --enums=String --defaults --grpcLib=@grpc/grpc-js --outDir=./src/infrastructure/grpc/pb ./src/infrastructure/grpc/protos/*.proto",
-        "start": "tsx src/server.ts"
+        "redis_seed": "ts-node src/infrastructure/redis/seed.ts"
     },
     "prisma": {
-        "seed": "tsx prisma/seed/index.ts"
+        "seed": "ts-node prisma/seed/index.ts"
+    },
+    "nodemonConfig": {
+        "restartable": "rs",
+        "ignore": [
+            ".git",
+            "node_modules",
+            ".pnpm-store",
+            "src copy"
+        ],
+        "verbose": true,
+        "ext": "ts,json"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "devDependencies": {
-        "@types/lodash": "^4.14.184",
-        "@types/node": "^16.11.10",
-        "@types/papaparse": "^5.3.5",
-        "@types/pg": "^8.6.5",
-        "@types/pg-copy-streams": "^1.2.1",
-        "@types/progress": "^2.0.5",
-        "@types/ssh2-sftp-client": "^9.0.0",
-        "pg-copy-streams": "^6.0.4",
-        "pino-pretty": "^9.1.1",
-        "prisma": "^4.3.1",
-        "progress": "^2.0.3",
-        "ts-node": "10.7.0",
-        "ts-node-dev": "^2.0.0",
-        "tsx": "^3.12.1",
-        "typescript": "4.5.2"
-    },
     "dependencies": {
-        "@grpc/grpc-js": "^1.7.1",
+        "@fastify/cors": "^8.2.0",
+        "@fastify/routes": "^5.1.0",
+        "@fastify/view": "^7.3.0",
+        "@gquittet/graceful-server": "^4.0.3",
+        "@grpc/grpc-js": "^1.7.3",
         "@grpc/proto-loader": "^0.7.3",
-        "@prisma/client": "^4.3.1",
-        "@trpc/server": "^10.1.0",
-        "dayjs": "^1.11.5",
-        "dotenv": "^16.0.2",
+        "@prisma/client": "^4.7.1",
+        "@redis/client": "^1.4.2",
+        "@redis/json": "^1.0.4",
+        "@redis/search": "^1.1.0",
+        "axios": "^1.2.1",
+        "class-validator": "^0.13.2",
+        "dotenv": "^16.0.3",
+        "ejs": "^3.1.8",
         "fastify": "^4.10.2",
+        "fuse.js": "^6.6.2",
+        "graphql": "^15.x.x",
+        "graphql-scalars": "^1.20.1",
+        "graphql-subscriptions": "^2.0.0",
+        "graphql-yoga": "^3.1.1",
         "lodash": "^4.17.21",
-        "logging": "^3.3.0",
-        "pg": "^8.4.0",
-        "prisma-zod-generator": "^0.7.4",
+        "redis": "^4.5.1",
         "reflect-metadata": "^0.1.13",
         "ssh2-sftp-client": "^9.0.4",
-        "typeorm": "0.3.10",
-        "typeorm-extension": "^2.2.12",
-        "zod": "^3.19.1"
+        "type-graphql": "^1.1.1"
+    },
+    "devDependencies": {
+        "@types/ejs": "^3.1.1",
+        "@types/lodash": "^4.14.191",
+        "@types/node": "^18.11.11",
+        "@types/ssh2-sftp-client": "^9.0.0",
+        "nodemon": "^2.0.20",
+        "pino-pretty": "^9.1.1",
+        "prettier": "^2.8.0",
+        "prisma": "^4.7.1",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^4.9.3"
     }
 }

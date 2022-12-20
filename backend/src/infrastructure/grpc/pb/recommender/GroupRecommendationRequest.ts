@@ -4,9 +4,12 @@
 export interface GroupRecommendationRequest {
   'animeIds'?: (number)[];
   'k'?: (number);
+  'excludedAnimeIds'?: (number)[];
+  '_k'?: "k";
 }
 
 export interface GroupRecommendationRequest__Output {
   'animeIds': (number)[];
-  'k': (number);
+  'k'?: (number);
+  'excludedAnimeIds': (number)[];
 }

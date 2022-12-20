@@ -1,3 +1,5 @@
-FROM node:16.17.0-slim
+FROM node:lts-slim
 
-RUN npm i -g pnpm ts-node
+RUN userdel -r node
+
+RUN npm i -g pnpm ts-node nodemon

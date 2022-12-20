@@ -1,0 +1,6 @@
+FROM libretranslate/libretranslate
+
+ARG models
+
+RUN ./venv/bin/python install_models.py --load_only_lang_codes "$models"
+
