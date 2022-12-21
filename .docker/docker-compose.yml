@@ -1,0 +1,8 @@
+version: '3.9'
+
+services:
+    backend:
+        build:
+            context: ..
+            dockerfile: .docker/Dockerfile
+        image: ${REGISTRY_HOST}:${IMAGE_LABEL}

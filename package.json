@@ -5,6 +5,9 @@
     "main": "index.js",
     "scripts": {
         "dev": "nodemon src/server.ts",
+        "build": "rm -rf dist && tsc --sourceMap -p ./",
+        "copy_proto": "mkdir -p ./dist/src/infrastructure/grpc/protos/ && cp ./src/infrastructure/grpc/protos/*.proto ./dist/src/infrastructure/grpc/protos/",
+        "start": "node ./dist/src/server.js",
         "proto_gen": "./node_modules/.bin/proto-loader-gen-types --longs=Number --enums=String --defaults --grpcLib=@grpc/grpc-js --outDir=./src/infrastructure/grpc/pb ./src/infrastructure/grpc/protos/*.proto",
         "redis_seed": "ts-node src/infrastructure/redis/seed.ts"
     },
@@ -42,7 +45,7 @@
         "ejs": "^3.1.8",
         "fastify": "^4.10.2",
         "fuse.js": "^6.6.2",
-        "graphql": "^15.x.x",
+        "graphql": "^15.8.0",
         "graphql-scalars": "^1.20.1",
         "graphql-subscriptions": "^2.0.0",
         "graphql-yoga": "^3.1.1",
@@ -57,6 +60,7 @@
         "@types/lodash": "^4.14.191",
         "@types/node": "^18.11.11",
         "@types/ssh2-sftp-client": "^9.0.0",
+        "@types/validator": "^13.7.10",
         "nodemon": "^2.0.20",
         "pino-pretty": "^9.1.1",
         "prettier": "^2.8.0",

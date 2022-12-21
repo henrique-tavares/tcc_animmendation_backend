@@ -15,13 +15,14 @@ specifiers:
   '@types/lodash': ^4.14.191
   '@types/node': ^18.11.11
   '@types/ssh2-sftp-client': ^9.0.0
+  '@types/validator': ^13.7.10
   axios: ^1.2.1
   class-validator: ^0.13.2
   dotenv: ^16.0.3
   ejs: ^3.1.8
   fastify: ^4.10.2
   fuse.js: ^6.6.2
-  graphql: ^15.x.x
+  graphql: ^15.8.0
   graphql-scalars: ^1.20.1
   graphql-subscriptions: ^2.0.0
   graphql-yoga: ^3.1.1
@@ -69,6 +70,7 @@ devDependencies:
   '@types/lodash': 4.14.191
   '@types/node': 18.11.11
   '@types/ssh2-sftp-client': 9.0.0
+  '@types/validator': 13.7.10
   nodemon: 2.0.20
   pino-pretty: 9.1.1
   prettier: 2.8.0
@@ -483,6 +485,10 @@ packages:
 
   /@types/strip-json-comments/0.0.30:
     resolution: {integrity: sha512-7NQmHra/JILCd1QqpSzl8+mJRc8ZHz3uDm8YV1Ks9IhK0epEiTw8aIErbvH9PI+6XbqhyIQy3462nEsn7UVzjQ==}
+    dev: true
+
+  /@types/validator/13.7.10:
+    resolution: {integrity: sha512-t1yxFAR2n0+VO6hd/FJ9F2uezAZVWHLmpmlJzm1eX03+H7+HsuTAp7L8QJs+2pQCfWkP1+EXsGK9Z9v7o/qPVQ==}
     dev: true
 
   /@whatwg-node/events/0.0.2:
