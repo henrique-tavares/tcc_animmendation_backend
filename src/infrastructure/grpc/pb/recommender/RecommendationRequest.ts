@@ -3,13 +3,16 @@
 
 export interface RecommendationRequest {
   'animeId'?: (number);
-  'k'?: (number);
+  'amount'?: (number);
+  'offset'?: (number);
   'excludedAnimeIds'?: (number)[];
-  '_k'?: "k";
+  '_amount'?: "amount";
+  '_offset'?: "offset";
 }
 
 export interface RecommendationRequest__Output {
   'animeId': (number);
-  'k'?: (number);
+  'amount'?: (number);
+  'offset'?: (number);
   'excludedAnimeIds': (number)[];
 }

@@ -52,6 +52,21 @@ enum AnimeMediaType {
   TV
 }
 
+"""The relation between animes"""
+enum AnimeRelation {
+  alternative_setting
+  alternative_version
+  character
+  full_story
+  other
+  parent_story
+  prequel
+  sequel
+  side_story
+  spin_off
+  summary
+}
+
 """The seasons in which Animes are released"""
 enum AnimeSeason {
   FALL
@@ -104,20 +119,33 @@ type Query {
   getAnimeBySeason(amount: Int, hentai: Boolean = false, mediaTypes: [AnimeMediaType!], method: TopAnimeMethod = POPULARITY, season: AnimeSeason!, year: Int!): [Anime!]!
   getAnimeByTitle(hentai: Boolean = false, title: String!): [Anime!]!
   getAnimeGenres(amount: Int, hentai: Boolean = false): [AnimeGenre!]!
-  getAnimeRecommendations(animeId: Int!, excludedAnimeIds: [Int!]!, k: Int!): [Recommendation!]!
+  getAnimeRecommendations(amount: Int!, animeId: Int!, excludedAnimeIds: [Int!]!, offset: Int): [Recommendation!]!
   getAnimeSources(amount: Int): [AnimeSource!]!
   getAnimeStudios(amount: Int): [AnimeStudio!]!
-  getGroupRecommendations(ages: [AnimeAgeClassification!], amount: Int!, animesId: [Int!]!, endDate: DateTime, endDateMethod: DateMethod, excludedAnimeIds: [Int!]!, genres: [String!], hentai: Boolean = false, mediaTypes: [AnimeMediaType!], nullEndDate: Boolean = false, sources: [String!], startDate: DateTime, startDateMethod: DateMethod, studios: [String!]): [Recommendation!]!
+  getGroupRecommendations(ages: [AnimeAgeClassification!], amount: Int!, animesId: [Int!]!, endDate: DateTime, endDateMethod: DateMethod, excludedAnimeIds: [Int!]!, genres: [String!], hentai: Boolean = false, mediaTypes: [AnimeMediaType!], nullEndDate: Boolean = false, offset: Int, sources: [String!], startDate: DateTime, startDateMethod: DateMethod, studios: [String!]): [Recommendation!]!
+  getRelatedAnime(animeId: Int!, excludedAnimeIds: [Int!]): [RelatedAnime!]!
   getTopAnime(ages: [AnimeAgeClassification!], amount: Int = 100, endDate: DateTime, endDateMethod: DateMethod, genres: [String!], hentai: Boolean = false, mediaTypes: [AnimeMediaType!], method: TopAnimeMethod!, nullEndDate: Boolean = false, offset: Int, sources: [String!], startDate: DateTime, startDateMethod: DateMethod, status: AnimeStatus, studios: [String!], title: String): [Anime!]!
   getUser: User!
   getUserAnimeList: [UserAnimeRating!]!
-  listAnimeById(ids: [Int!]!): [Anime!]!
+  listAnimeById(ids: [Int!]!, method: TopAnimeMethod!): [Anime!]!
 }
 
 """Object representing a single Anime recommendation"""
 type Recommendation {
   anime: Anime!
   rank: Int!
+}
+
+"""Object representing a related anime"""
+type RelatedAnime {
+  genres: [String!]
+  id: Int!
+  mediaType: AnimeMediaType
+  picture: String
+  popularity: Int
+  relation: AnimeRelation!
+  score: Float!
+  title: String!
 }
 
 """Criteria for getting popular Anime"""

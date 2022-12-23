@@ -5,6 +5,7 @@ services:
         build: .
         volumes:
             - ..:/home/animmendation/tcc_animmendation/backend
+            - ~/.ssh:/home/animmendation/.ssh
             - datasets:/home/animmendation/tcc_animmendation/backend/datasets
         ports:
             - 4000:4000

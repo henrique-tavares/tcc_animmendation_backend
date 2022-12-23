@@ -15,8 +15,9 @@ export class RecommendationResolver {
   @Query((returns) => [Recommendation])
   async getAnimeRecommendations(
     @Arg("animeId", (type) => Int) animeId: number,
-    @Arg("k", (type) => Int) k: number,
-    @Arg("excludedAnimeIds", (type) => [Int]) excludedAnimeIds: number[]
+    @Arg("excludedAnimeIds", (type) => [Int]) excludedAnimeIds: number[],
+    @Arg("amount", (type) => Int) amount: number,
+    @Arg("offset", (type) => Int, { nullable: true }) offset: number = 0
   ): Promise<Recommendation[]> {
     const validAnime = await prisma.anime.findUnique({
       where: {
@@ -36,7 +37,8 @@ export class RecommendationResolver {
 
     const res = await recommender.getRecommendations({
       animeId,
-      k,
+      amount,
+      offset,
       excludedAnimeIds,
     });
 
@@ -47,31 +49,21 @@ export class RecommendationResolver {
       );
     }
 
-    const recommendations = await Promise.all(
-      res.recommendations.map(async ({ recommendedAnimeId, rank }) => {
-        const recommendedAnime = await prisma.anime.findUnique({
-          where: {
-            id: recommendedAnimeId,
-          },
-        });
-
-        if (!recommendedAnime) {
-          throw GqlError(
-            `The recommended anime (${recommendedAnimeId}) does not exist'`,
-            404
-          );
-        }
-
-        return {
-          anime: recommendedAnime,
-          rank,
-        };
-      })
+    const recommendedAnimeMap = new Map(
+      res.recommendations.map((rec) => [rec.recommendedAnimeId, rec.rank])
     );
 
-    return recommendations.map((recommendation) => ({
-      anime: convertAnime(recommendation.anime),
-      rank: recommendation.rank,
+    const recommededAnime = await prisma.anime.findMany({
+      where: {
+        id: {
+          in: [...recommendedAnimeMap.keys()],
+        },
+      },
+    });
+
+    return recommededAnime.map((recommendation) => ({
+      anime: convertAnime(recommendation),
+      rank: recommendedAnimeMap.get(recommendation.id)!,
     }));
   }
 
@@ -80,6 +72,7 @@ export class RecommendationResolver {
     @Arg("animesId", (type) => [Int]) animesId: number[],
     @Arg("amount", (type) => Int) amount: number,
     @Arg("excludedAnimeIds", (type) => [Int]) excludedAnimeIds: number[],
+    @Arg("offset", (type) => Int, { nullable: true }) offset: number = 0,
     @Arg("genres", (type) => [String], { nullable: true }) genres?: string[],
     @Arg("mediaTypes", (type) => [AnimeMediaTypeEnum], { nullable: true })
     mediaTypes?: AnimeMediaTypeEnum[],
@@ -189,7 +182,7 @@ export class RecommendationResolver {
     const sortedRecomendedAnime = recommendedAnime
       .map((anime) => ({ anime, rank: recommendedAnimeMap.get(anime.id)! }))
       .sort((a, b) => a.rank - b.rank)
-      .slice(0, amount);
+      .slice(offset, offset + amount);
 
     //     if (!recommendedAnime) {
     //       throw GqlError(

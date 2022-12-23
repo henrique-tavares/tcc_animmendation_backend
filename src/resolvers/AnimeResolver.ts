@@ -22,7 +22,9 @@ import {
   AnimeStatusEnum,
   TopAnimeMethodEnum,
 } from "../objects/enums";
+import { AnimeRelationEnum } from "../objects/enums/AnimeRelation";
 import { DateMethodEnum } from "../objects/enums/DateMethod";
+import { RelatedAnime } from "../objects/RelatedAnime";
 import convertAnime from "../utils/convertAnime";
 import { GqlError } from "../utils/GqlError";
 @Resolver(Anime)
@@ -248,14 +250,28 @@ export class AnimeResolver {
 
   @Query((returns) => [Anime])
   async listAnimeById(
-    @Arg("ids", (type) => [Int]) ids: number[]
+    @Arg("ids", (type) => [Int]) ids: number[],
+    @Arg("method", (type) => TopAnimeMethodEnum) method: TopAnimeMethodEnum
   ): Promise<Anime[]> {
+    const orderByParser: Record<
+      TopAnimeMethodEnum,
+      Prisma.AnimeOrderByWithRelationInput
+    > = {
+      [AnimeOrderByEnum.POPULARITY]: {
+        popularity: "asc",
+      },
+      [AnimeOrderByEnum.SCORE]: {
+        score: "desc",
+      },
+    };
+
     const animes = await prisma.anime.findMany({
       where: {
         id: {
           in: ids,
         },
       },
+      orderBy: orderByParser[method],
     });
 
     const foundIds = new Set(animes.map((anime) => anime.id));
@@ -332,8 +348,7 @@ export class AnimeResolver {
 
   @Query((returns) => [AnimeTitles])
   async getAllAnimeTitles(): Promise<AnimeTitles[]> {
-    // const loaded = await redisClient.exists("anime:titles");
-    const loaded = 0;
+    const loaded = await redisClient.exists("anime:titles");
 
     if (loaded == 0) {
       await seedAnimeTitles();
@@ -345,5 +360,91 @@ export class AnimeResolver {
     )) as any as AnimeTitles[];
 
     return titles;
+  }
+
+  @Query((returns) => [RelatedAnime])
+  async getRelatedAnime(
+    @Arg("animeId", (type) => Int) animeId: number,
+    @Arg("excludedAnimeIds", (type) => [Int], { nullable: true })
+    excludedAnimeIds?: number[]
+  ): Promise<RelatedAnime[]> {
+    const { relatedAnime: relatedAnimeRaw } =
+      await prisma.anime.findUniqueOrThrow({
+        where: {
+          id: animeId,
+        },
+        select: {
+          relatedAnime: true,
+        },
+      });
+
+    const relatedAnimeMap = new Map(
+      relatedAnimeRaw.map((related) => [
+        Number(related.split(" ")[1]),
+        related.split(" ")[0] as AnimeRelationEnum,
+      ])
+    );
+
+    const filteredRelatedMap = new Map(
+      [...relatedAnimeMap.entries()].filter(
+        ([animeId, relation]) =>
+          ![AnimeRelationEnum.character, AnimeRelationEnum.summary].includes(
+            relation
+          )
+      )
+    );
+
+    const relatedAnime = await prisma.anime.findMany({
+      where: {
+        AND: [
+          {
+            id: {
+              in: [...filteredRelatedMap.keys()],
+            },
+          },
+          {
+            id: {
+              notIn: excludedAnimeIds,
+            },
+          },
+        ],
+        NOT: {
+          genres: {
+            has: "Hentai",
+          },
+        },
+      },
+    });
+
+    // const relationOrder: Record<AnimeRelationEnum, number> = {
+    //   sequel: 1,
+    //   prequel: 2,
+    //   side_story: 3,
+    //   parent_story: 4,
+    //   spin_off: 5,
+    //   alternative_version: 6,
+    //   alternative_setting: 7,
+    //   other: 8,
+    //   full_story: 9,
+    //   summary: 10,
+    //   character: 11,
+    // };
+
+    return relatedAnime
+      .map((related) => ({
+        id: related.id,
+        genres: related.genres,
+        mediaType: AnimeMediaTypeEnum[related.mediaType],
+        picture: related.picture,
+        popularity: related.popularity,
+        score: related.score,
+        title: related.title,
+        relation: relatedAnimeMap.get(related.id)! as AnimeRelationEnum,
+      }))
+      .sort(
+        (a, b) =>
+          (a.popularity ?? Number.MAX_SAFE_INTEGER) -
+          (b.popularity ?? Number.MAX_SAFE_INTEGER)
+      );
   }
 }
