@@ -40,7 +40,7 @@ export const malLogin: FastifyPluginCallback = (fastify, _, done) => {
         grant_type: "authorization_code",
         code: code ?? "",
         code_verifier: process.env.MAL_CODE_CHALLENGE ?? "",
-        redirect_uri: "http://localhost:4000/login/mal/callback",
+        redirect_uri: process.env.MAL_CALLBACK_URL ?? "",
       });
       const tokenRes = await axios.post<{
         access_token: string;
