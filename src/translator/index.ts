@@ -2,7 +2,7 @@ import { FastifyPluginCallback } from "fastify";
 import axios from "axios";
 
 export const translator: FastifyPluginCallback = (fastify, _, done) => {
-  fastify.get("/translate", async (req, res) => {
+  fastify.post("/translate", async (req, res) => {
     const translateBody = req.body as {
       q: string;
       source: string;
