@@ -11,6 +11,7 @@ import { redisClient } from "./infrastructure/redis/client";
 import { malLogin } from "./login/mal";
 import { createYoga } from "graphql-yoga";
 import { loginCredentials } from "./login/credentials";
+import { translator } from "./translator";
 
 config({ override: true });
 
@@ -94,6 +95,7 @@ app.route({
 
 app.register(malLogin, { prefix: "/login" });
 app.register(loginCredentials, { prefix: "/login" });
+app.register(translator);
 
 app
   .listen({
