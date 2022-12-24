@@ -21,6 +21,7 @@ declare global {
       MAL_CLIENT_ID?: string;
       MAL_CLIENT_SECRET?: string;
       MAL_CODE_CHALLENGE?: string;
+      MAL_CALLBACK_URL?: string;
     }
   }
 }

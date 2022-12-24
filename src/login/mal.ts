@@ -16,7 +16,7 @@ export const malLogin: FastifyPluginCallback = (fastify, _, done) => {
       client_id: process.env.MAL_CLIENT_ID,
       scope: "write:users",
       code_challenge: process.env.MAL_CODE_CHALLENGE,
-      redirect_uri: `http://localhost:4000/login/mal/callback`,
+      redirect_uri: process.env.MAL_CALLBACK_URL,
       state: sessionId,
     };
     const url = new URL(
