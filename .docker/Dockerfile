@@ -4,10 +4,10 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm i -g pnpm
+RUN npm i -g pnpm ts-node
 RUN pnpm i
-RUN pnpm run build && pnpm run copy_proto
+# RUN pnpm run build && pnpm run copy_proto
 
 EXPOSE 4000
 
-CMD ["node", "./dist/src/server.js"]
+CMD ["ts-node", "./src/server.js"]
