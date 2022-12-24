@@ -10,4 +10,4 @@ RUN pnpm i
 
 EXPOSE 4000
 
-CMD ["ts-node", "./src/server.js"]
+CMD ["ts-node", "./src/server.ts"]
