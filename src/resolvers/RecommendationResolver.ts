@@ -92,24 +92,9 @@ export class RecommendationResolver {
     nullEndDate: boolean = false,
     @Arg("hentai", { defaultValue: false }) hentai: boolean = false
   ): Promise<Recommendation[]> {
-    // for (const animeId of animesId) {
-    //   const validAnime = await prisma.anime.findUnique({
-    //     where: {
-    //       id: animeId,
-    //     },
-    //     select: {
-    //       id: true,
-    //     },
-    //   });
-
-    //   if (!validAnime) {
-    //     throw GqlError(`Invalid Anime Id (${animeId})`, 404);
-    //   }
-    // }
-
     const res = await recommender.getGroupRecommendations({
       animeIds: animesId,
-      excludedAnimeIds,
+      excludedAnimeIds: Array.from(new Set(animesId.concat(excludedAnimeIds))),
     });
 
     if (!res) {
@@ -123,8 +108,6 @@ export class RecommendationResolver {
       res.recommendations.map((rec) => [rec.recommendedAnimeId, rec.rank])
     );
 
-    // const recommendations = await Promise.all(
-    //   res.recommendations.map(async ({ recommendedAnimeId, rank }) => {
     const recommendedAnime = await prisma.anime.findMany({
       where: {
         id: {
@@ -183,20 +166,6 @@ export class RecommendationResolver {
       .map((anime) => ({ anime, rank: recommendedAnimeMap.get(anime.id)! }))
       .sort((a, b) => a.rank - b.rank)
       .slice(offset, offset + amount);
-
-    //     if (!recommendedAnime) {
-    //       throw GqlError(
-    //         `The recommended anime (${recommendedAnimeId}) does not exist'`,
-    //         404
-    //       );
-    //     }
-
-    //     return {
-    //       anime: recommendedAnime,
-    //       rank,
-    //     };
-    //   })
-    // );
 
     return sortedRecomendedAnime.map((recommendation) => ({
       anime: convertAnime(recommendation.anime),
