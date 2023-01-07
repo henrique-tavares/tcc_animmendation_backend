@@ -58,6 +58,11 @@ export class RecommendationResolver {
         id: {
           in: [...recommendedAnimeMap.keys()],
         },
+        NOT: {
+          genres: {
+            has: "Hentai",
+          },
+        },
       },
     });
 
